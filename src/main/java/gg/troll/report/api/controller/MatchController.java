@@ -21,7 +21,7 @@ public class MatchController {
     @GetMapping("/list/encryptedAccountId")
     @ResponseBody
     public CodeResponse getMatchListByEncryptedAccountId(
-            @RequestParam String riotApiKey,
+            String riotApiKey,
             @RequestParam String encryptedAccountId,
             @RequestParam(required = false, defaultValue = "0") int beginIndex,
             @RequestParam(required = false, defaultValue = "0") int endIndex) throws Exception {
@@ -31,7 +31,7 @@ public class MatchController {
 
     @GetMapping("/id")
     @ResponseBody
-    public CodeResponse getMatchById(@RequestParam String riotApiKey, @RequestParam long matchId) throws Exception {
+    public CodeResponse getMatchById(String riotApiKey, @RequestParam long matchId) throws Exception {
         MatchDto matchDto = matchService.getMatchById(riotApiKey, matchId);
         return CodeResponse.successResult(matchDto);
     }

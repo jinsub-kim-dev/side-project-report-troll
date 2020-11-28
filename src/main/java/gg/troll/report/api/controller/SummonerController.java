@@ -19,7 +19,7 @@ public class SummonerController {
 
     @GetMapping("/name")
     @ResponseBody
-    public CodeResponse getSummonerByName(@RequestParam String riotApiKey, @RequestParam String summonerName) throws Exception {
+    public CodeResponse getSummonerByName(String riotApiKey, @RequestParam String summonerName) throws Exception {
         SummonerDTO summonerDTO = summonerService.getSummonerByName(riotApiKey, summonerName);
         return CodeResponse.successResult(summonerDTO);
     }
