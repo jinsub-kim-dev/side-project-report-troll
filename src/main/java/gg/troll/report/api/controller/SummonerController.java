@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/summoner")
+@RequestMapping("/api/v1/summoner")
 public class SummonerController {
 
     @Autowired
