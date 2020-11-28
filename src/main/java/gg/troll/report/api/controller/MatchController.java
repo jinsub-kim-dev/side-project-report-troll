@@ -6,6 +6,7 @@ import gg.troll.report.api.match.service.MatchService;
 import gg.troll.report.base.model.CodeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,7 +18,7 @@ public class MatchController {
     @Autowired
     MatchService matchService;
 
-    @RequestMapping("/list/encryptedAccountId")
+    @GetMapping("/list/encryptedAccountId")
     @ResponseBody
     public CodeResponse getMatchListByEncryptedAccountId(
             @RequestParam String riotApiKey,
@@ -28,7 +29,7 @@ public class MatchController {
         return CodeResponse.successResult(matchlistDto);
     }
 
-    @RequestMapping("/id")
+    @GetMapping("/id")
     @ResponseBody
     public CodeResponse getMatchById(@RequestParam String riotApiKey, @RequestParam long matchId) throws Exception {
         MatchDto matchDto = matchService.getMatchById(riotApiKey, matchId);
