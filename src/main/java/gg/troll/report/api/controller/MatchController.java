@@ -1,5 +1,6 @@
 package gg.troll.report.api.controller;
 
+import gg.troll.report.api.match.model.MatchDto;
 import gg.troll.report.api.match.model.MatchlistDto;
 import gg.troll.report.api.match.service.MatchService;
 import gg.troll.report.base.model.CodeResponse;
@@ -25,5 +26,12 @@ public class MatchController {
             @RequestParam(required = false, defaultValue = "0") int endIndex) throws Exception {
         MatchlistDto matchlistDto = matchService.getMatchListByEncryptedAccountId(riotApiKey, encryptedAccountId, beginIndex, endIndex);
         return CodeResponse.successResult(matchlistDto);
+    }
+
+    @RequestMapping("/id")
+    @ResponseBody
+    public CodeResponse getMatchById(@RequestParam String riotApiKey, @RequestParam long matchId) throws Exception {
+        MatchDto matchDto = matchService.getMatchById(riotApiKey, matchId);
+        return CodeResponse.successResult(matchDto);
     }
 }

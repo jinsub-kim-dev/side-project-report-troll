@@ -1,6 +1,7 @@
 package gg.troll.report.api.match.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gg.troll.report.api.match.model.MatchDto;
 import gg.troll.report.api.match.model.MatchlistDto;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -22,6 +23,19 @@ public class MatchService {
             String body = new BasicResponseHandler().handleResponse(response);
             MatchlistDto matchlistDto = new ObjectMapper().readValue(body, MatchlistDto.class);
             return matchlistDto;
+        } else {
+            throw new Exception();
+        }
+    }
+
+    public MatchDto getMatchById(String riotApiKey, long matchId) throws Exception {
+        String requestURL = "https://kr.api.riotgames.com/lol/match/v4/matches/"+ matchId + "?api_key=" + riotApiKey;
+
+        HttpResponse response = HttpClientBuilder.create().build().execute(new HttpGet(requestURL));
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            String body = new BasicResponseHandler().handleResponse(response);
+            MatchDto matchDto = new ObjectMapper().readValue(body, MatchDto.class);
+            return matchDto;
         } else {
             throw new Exception();
         }
