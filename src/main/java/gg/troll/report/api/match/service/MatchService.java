@@ -4,15 +4,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gg.troll.report.api.match.model.MatchDto;
 import gg.troll.report.api.match.model.MatchlistDto;
 import gg.troll.report.api.match.model.ReducedMatchDto;
+import gg.troll.report.api.match.model.ReducedMatchlistDto;
+import gg.troll.report.api.summoner.model.SummonerDTO;
+import gg.troll.report.api.summoner.service.SummonerService;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MatchService {
+
+    @Autowired
+    SummonerService summonerService;
 
     public MatchlistDto getMatchListByEncryptedAccountId(String riotApiKey, String encryptedAccountId, int beginIndex, int endIndex) throws Exception {
         String requestURL = "https://kr.api.riotgames.com/lol/match/v4/matchlists/by-account/"+ encryptedAccountId + "?api_key=" + riotApiKey;
@@ -45,5 +55,29 @@ public class MatchService {
     public ReducedMatchDto getReducedMatchById(String riotApiKey, long matchId) throws Exception {
         MatchDto matchDto = getMatchById(riotApiKey, matchId);
         return ReducedMatchDto.of(matchDto);
+    }
+
+    public ReducedMatchlistDto getReducedMatchListBySummonerName(String riotApiKey, String summonerName, int beginIndex, int endIndex) throws Exception {
+        SummonerDTO summonerDTO = summonerService.getSummonerByName(riotApiKey, summonerName);
+        String encryptedAccountId = summonerDTO.getAccountId();
+
+        MatchlistDto matchlistDto = getMatchListByEncryptedAccountId(riotApiKey, encryptedAccountId, beginIndex, endIndex);
+        List<ReducedMatchDto> matches = matchlistDto.getMatches().stream()
+                .map(matchReferenceDto -> {
+                    try {
+                        return getReducedMatchById(riotApiKey, matchReferenceDto.getGameId());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                })
+                .collect(Collectors.toList());
+
+        return ReducedMatchlistDto.builder()
+                .startIndex(matchlistDto.getStartIndex())
+                .endIndex(matchlistDto.getEndIndex())
+                .totalGames(matchlistDto.getTotalGames())
+                .matches(matches)
+                .build();
     }
 }
