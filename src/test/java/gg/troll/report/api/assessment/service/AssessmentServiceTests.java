@@ -2,23 +2,29 @@ package gg.troll.report.api.assessment.service;
 
 import gg.troll.report.api.assessment.enums.AssessmentType;
 import gg.troll.report.api.assessment.model.dto.AssessmentDto;
+import gg.troll.report.api.assessment.model.dto.AssessmentListDto;
 import gg.troll.report.api.assessment.model.entity.Assessment;
 import gg.troll.report.api.assessment.repository.AssessmentRepository;
+import gg.troll.report.base.config.TestConfig;
 import gg.troll.report.base.helper.CryptoHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource("classpath:application-test.properties")
 @DataJpaTest
+@Import(TestConfig.class)
 public class AssessmentServiceTests {
 
     @Autowired
@@ -67,5 +73,39 @@ public class AssessmentServiceTests {
         assertThat(testAssessmentDto.getAccountId()).isEqualTo(testAccountId);
         assertThat(testAssessmentDto.getAssessmentType()).isEqualTo(testAssessmentType);
         assertThat(testAssessmentDto.getComment()).isEqualTo(testComment);
+    }
+
+    @Test
+    public void gameId와_accountId로_평가를_최신순으로_조회한다() {
+        final int NUM_OF_ASSESSMENTS = 5;
+        long testGameId = 1L;
+        String testAccountId = "test account id";
+        AssessmentType testAssessmentType = AssessmentType.REPORT;
+        String testHashedPassword = "test hashed password";
+        List<String> testComments = new ArrayList<>();
+        List<Assessment> assessments = new ArrayList<>();
+
+        for (int i = 0; i < NUM_OF_ASSESSMENTS; i++) {
+            String testComment = "test comment " + i;
+            testComments.add(testComment);
+            assessments.add(assessmentRepository.save(Assessment.builder()
+                    .gameId(testGameId)
+                    .accountId(testAccountId)
+                    .assessmentType(testAssessmentType)
+                    .comment(testComment)
+                    .hashedPassword(testHashedPassword)
+                    .build()));
+        }
+
+        long fromAssessmentId = 0L;
+        int size = 3;
+        AssessmentListDto assessmentListDto = assessmentService.getAssessmentListDto(testGameId, testAccountId, fromAssessmentId, size);
+        assertThat(assessmentListDto.getAssessments().get(0).getComment()).isEqualTo(testComments.get(NUM_OF_ASSESSMENTS-1));
+        assertThat(assessmentListDto.getLastAssessmentId()).isEqualTo(assessments.get(NUM_OF_ASSESSMENTS-size).getAssessmentId());
+        assertThat(assessmentListDto.isAllowMore()).isTrue();
+
+        fromAssessmentId = assessmentListDto.getLastAssessmentId();
+        assessmentListDto = assessmentService.getAssessmentListDto(testGameId, testAccountId, fromAssessmentId, size);
+        assertThat(assessmentListDto.isAllowMore()).isFalse();
     }
 }
