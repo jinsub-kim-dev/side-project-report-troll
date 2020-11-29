@@ -3,6 +3,7 @@ package gg.troll.report.api.match.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gg.troll.report.api.match.model.MatchDto;
 import gg.troll.report.api.match.model.MatchlistDto;
+import gg.troll.report.api.match.model.ReducedMatchDto;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -39,5 +40,10 @@ public class MatchService {
         } else {
             throw new Exception();
         }
+    }
+
+    public ReducedMatchDto getReducedMatchById(String riotApiKey, long matchId) throws Exception {
+        MatchDto matchDto = getMatchById(riotApiKey, matchId);
+        return ReducedMatchDto.of(matchDto);
     }
 }
