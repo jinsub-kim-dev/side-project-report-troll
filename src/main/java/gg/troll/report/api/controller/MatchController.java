@@ -4,6 +4,10 @@ import gg.troll.report.api.match.model.MatchDto;
 import gg.troll.report.api.match.model.MatchlistDto;
 import gg.troll.report.api.match.service.MatchService;
 import gg.troll.report.base.model.CodeResponse;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +24,10 @@ public class MatchController {
 
     @GetMapping("/list/encryptedAccountId")
     @ResponseBody
+    @ApiOperation(value = "(Riot 제공 API) 계정 아이디로 매치 리스트 조회.", response = MatchlistDto.class)
+    @ApiImplicitParams({@ApiImplicitParam(name = "Riot-API-Key",  required = true, dataType = "string", paramType = "header")})
     public CodeResponse getMatchListByEncryptedAccountId(
-            String riotApiKey,
+            @ApiParam(hidden = true) String riotApiKey,
             @RequestParam String encryptedAccountId,
             @RequestParam(required = false, defaultValue = "0") int beginIndex,
             @RequestParam(required = false, defaultValue = "0") int endIndex) throws Exception {
@@ -31,7 +37,9 @@ public class MatchController {
 
     @GetMapping("/id")
     @ResponseBody
-    public CodeResponse getMatchById(String riotApiKey, @RequestParam long matchId) throws Exception {
+    @ApiOperation(value = "(Riot 제공 API) 매치 아이디로 세부 매치 정보 조회.", response = MatchDto.class)
+    @ApiImplicitParams({@ApiImplicitParam(name = "Riot-API-Key",  required = true, dataType = "string", paramType = "header")})
+    public CodeResponse getMatchById(@ApiParam(hidden = true) String riotApiKey, @RequestParam long matchId) throws Exception {
         MatchDto matchDto = matchService.getMatchById(riotApiKey, matchId);
         return CodeResponse.successResult(matchDto);
     }
