@@ -1,16 +1,23 @@
 package gg.troll.report.api.summoner.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gg.troll.report.api.league.model.ReducedLeagueEntryDTO;
+import gg.troll.report.api.league.service.LeagueService;
+import gg.troll.report.api.summoner.model.LeagueSummonerDTO;
 import gg.troll.report.api.summoner.model.SummonerDTO;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SummonerService {
+
+    @Autowired
+    LeagueService leagueService;
 
     public SummonerDTO getSummonerByName(String riotApiKey, String summonerName) throws Exception {
         summonerName = summonerName.replaceAll(" ", "%20");
@@ -24,5 +31,18 @@ public class SummonerService {
         } else {
             throw new Exception();
         }
+    }
+
+    public LeagueSummonerDTO getLeagueSummonerByName(String riotApiKey, String summonerName) throws Exception {
+        SummonerDTO summonerDTO = getSummonerByName(riotApiKey, summonerName);
+        String encryptedSummonerId = summonerDTO.getId();
+        ReducedLeagueEntryDTO reducedLeagueEntryDTO = leagueService.getReducedLeagueEntryDTO(riotApiKey, encryptedSummonerId);
+        return LeagueSummonerDTO.builder()
+                .accountId(summonerDTO.getAccountId())
+                .id(summonerDTO.getId())
+                .name(summonerDTO.getName())
+                .summonerLevel(summonerDTO.getSummonerLevel())
+                .leagueEntry(reducedLeagueEntryDTO)
+                .build();
     }
 }
