@@ -2,10 +2,12 @@ package gg.troll.report.api.assessment.repository;
 
 import gg.troll.report.api.assessment.enums.AssessmentType;
 import gg.troll.report.api.assessment.model.entity.Assessment;
+import gg.troll.report.base.config.TestConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -14,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @TestPropertySource("classpath:application-test.properties")
 @DataJpaTest
+@Import(TestConfig.class)
 public class AssessmentRepositoryTests {
 
     @Autowired
