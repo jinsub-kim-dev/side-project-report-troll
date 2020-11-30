@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @EnableJpaAuditing
 @SpringBootApplication
-@ComponentScan(basePackages = "gg.troll.report.api")
+@ComponentScan(basePackages = {"gg.troll.report.api", "gg.troll.report.base"})
 public class ReportTrollApplication {
 
 	public static void main(String[] args) {
