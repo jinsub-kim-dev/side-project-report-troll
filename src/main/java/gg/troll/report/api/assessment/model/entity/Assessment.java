@@ -1,6 +1,7 @@
 package gg.troll.report.api.assessment.model.entity;
 
 import gg.troll.report.api.assessment.enums.AssessmentType;
+import gg.troll.report.base.converter.BooleanToYNConverter;
 import gg.troll.report.base.model.BaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,4 +36,8 @@ public class Assessment extends BaseTimeEntity {
 
     @Column
     private String hashedPassword;
+
+    @Column
+    @Convert(converter = BooleanToYNConverter.class)
+    private boolean deleted;
 }

@@ -26,6 +26,7 @@ public class AssessmentService {
                 .assessmentType(assessmentType)
                 .comment(comment)
                 .hashedPassword(CryptoHelper.getSha256HashedString(password))
+                .deleted(false)
                 .build());
 
         return savedAssessment.getAssessmentId();
