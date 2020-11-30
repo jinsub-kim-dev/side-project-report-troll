@@ -74,4 +74,14 @@ public class AssessmentService {
 
         assessment.modifyComment(comment);
     }
+
+    public void deleteAssessment(long assessmentId, String password) throws NoSuchAlgorithmException {
+        Assessment assessment = getAssessmentById(assessmentId);
+        String hashedPassword = CryptoHelper.getSha256HashedString(password);
+        if (!assessment.getHashedPassword().equals(hashedPassword)) {
+            throw new BaseException(ErrorCode.ASSESSMENT_PASSWORD_MISMATCH, "password mismatch");
+        }
+
+        assessment.deleteAssessment();
+    }
 }

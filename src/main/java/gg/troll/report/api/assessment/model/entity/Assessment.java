@@ -44,4 +44,8 @@ public class Assessment extends BaseTimeEntity {
     public void modifyComment(String comment) {
         this.comment = comment;
     }
+
+    public void deleteAssessment() {
+        this.deleted = true;
+    }
 }
