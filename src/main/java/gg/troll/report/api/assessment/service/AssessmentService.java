@@ -5,6 +5,8 @@ import gg.troll.report.api.assessment.model.dto.AssessmentDto;
 import gg.troll.report.api.assessment.model.dto.AssessmentListDto;
 import gg.troll.report.api.assessment.model.entity.Assessment;
 import gg.troll.report.api.assessment.repository.AssessmentRepository;
+import gg.troll.report.base.exception.BaseException;
+import gg.troll.report.base.exception.ErrorCode;
 import gg.troll.report.base.helper.CryptoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,5 +63,15 @@ public class AssessmentService {
                 .lastAssessmentId(lastAssessmentId)
                 .allowMore(allowMore)
                 .build();
+    }
+
+    public void updateAssessmentComment(long assessmentId, String comment, String password) throws NoSuchAlgorithmException {
+        Assessment assessment = getAssessmentById(assessmentId);
+        String hashedPassword = CryptoHelper.getSha256HashedString(password);
+        if (!assessment.getHashedPassword().equals(hashedPassword)) {
+            throw new BaseException(ErrorCode.ASSESSMENT_PASSWORD_MISMATCH, "password mismatch");
+        }
+
+        assessment.modifyComment(comment);
     }
 }

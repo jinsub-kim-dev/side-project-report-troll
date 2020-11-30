@@ -40,4 +40,8 @@ public class Assessment extends BaseTimeEntity {
     @Column
     @Convert(converter = BooleanToYNConverter.class)
     private boolean deleted;
+
+    public void modifyComment(String comment) {
+        this.comment = comment;
+    }
 }

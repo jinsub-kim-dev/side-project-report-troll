@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
+    ASSESSMENT_PASSWORD_MISMATCH(501, "assessment.password.mismatch"),
     UNKNOWN(999, "unexpected.exception");
 
     int errorCode;

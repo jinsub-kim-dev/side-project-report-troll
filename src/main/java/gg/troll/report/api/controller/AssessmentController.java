@@ -2,14 +2,14 @@ package gg.troll.report.api.controller;
 
 import gg.troll.report.api.assessment.model.dto.AssessmentDto;
 import gg.troll.report.api.assessment.model.dto.AssessmentListDto;
+import gg.troll.report.api.assessment.model.request.AssessmentCommentRequest;
 import gg.troll.report.api.assessment.service.AssessmentService;
 import gg.troll.report.base.model.CodeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.NoSuchAlgorithmException;
 
 @Controller
 @RequestMapping("/api/v1/assessment")
@@ -34,5 +34,12 @@ public class AssessmentController {
             @RequestParam(defaultValue = "10") int size) {
         AssessmentListDto assessmentListDto = assessmentService.getAssessmentListDto(gameId, accountId, fromAssessmentId, size);
         return CodeResponse.successResult(assessmentListDto);
+    }
+
+    @PutMapping("/comment")
+    @ResponseBody
+    public CodeResponse updateAssessmentComment(@RequestBody AssessmentCommentRequest request) throws NoSuchAlgorithmException {
+        assessmentService.updateAssessmentComment(request.getAssessmentId(), request.getComment(), request.getPassword());
+        return CodeResponse.success();
     }
 }
