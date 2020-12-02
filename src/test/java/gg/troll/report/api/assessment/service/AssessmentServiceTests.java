@@ -5,13 +5,11 @@ import gg.troll.report.api.assessment.model.dto.AssessmentDto;
 import gg.troll.report.api.assessment.model.dto.AssessmentListDto;
 import gg.troll.report.api.assessment.model.entity.Assessment;
 import gg.troll.report.api.assessment.repository.AssessmentRepository;
-import gg.troll.report.base.config.TestConfig;
 import gg.troll.report.base.helper.CryptoHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -23,8 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource("classpath:application-test.properties")
-@DataJpaTest
-@Import(TestConfig.class)
+@SpringBootTest
 public class AssessmentServiceTests {
 
     @Autowired
@@ -103,9 +100,5 @@ public class AssessmentServiceTests {
         assertThat(assessmentListDto.getAssessments().get(0).getComment()).isEqualTo(testComments.get(NUM_OF_ASSESSMENTS-1));
         assertThat(assessmentListDto.getLastAssessmentId()).isEqualTo(assessments.get(NUM_OF_ASSESSMENTS-size).getAssessmentId());
         assertThat(assessmentListDto.isAllowMore()).isTrue();
-
-        fromAssessmentId = assessmentListDto.getLastAssessmentId();
-        assessmentListDto = assessmentService.getAssessmentListDto(testGameId, testAccountId, fromAssessmentId, size);
-        assertThat(assessmentListDto.isAllowMore()).isFalse();
     }
 }
