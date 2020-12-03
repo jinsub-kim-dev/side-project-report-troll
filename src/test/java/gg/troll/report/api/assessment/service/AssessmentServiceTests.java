@@ -37,9 +37,9 @@ public class AssessmentServiceTests {
         String testComment = "test comment";
         String testPassword = "test hashed password";
 
-        long savedAssessmentId = assessmentService.createAssessment(testGameId, testAccountId, testAssessmentType, testComment, testPassword);
+        Assessment savedAssessment = assessmentService.createAssessment(testGameId, testAccountId, testAssessmentType, testComment, testPassword);
 
-        Assessment testAssessment = assessmentRepository.findById(savedAssessmentId).get();
+        Assessment testAssessment = assessmentRepository.findById(savedAssessment.getAssessmentId()).get();
 
         assertThat(testAssessment.getGameId()).isEqualTo(testGameId);
         assertThat(testAssessment.getAccountId()).isEqualTo(testAccountId);
