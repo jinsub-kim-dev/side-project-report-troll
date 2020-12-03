@@ -21,7 +21,7 @@ public class AssessmentService {
     @Autowired
     AssessmentRepository assessmentRepository;
 
-    public long createAssessment(long gameId, String accountId, AssessmentType assessmentType, String comment, String password) throws NoSuchAlgorithmException {
+    public Assessment createAssessment(long gameId, String accountId, AssessmentType assessmentType, String comment, String password) throws NoSuchAlgorithmException {
         Assessment savedAssessment = assessmentRepository.save(Assessment.builder()
                 .gameId(gameId)
                 .accountId(accountId)
@@ -31,7 +31,7 @@ public class AssessmentService {
                 .deleted(false)
                 .build());
 
-        return savedAssessment.getAssessmentId();
+        return savedAssessment;
     }
 
     public Assessment getAssessmentById(long assessmentId) {

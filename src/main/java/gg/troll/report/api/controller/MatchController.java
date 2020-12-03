@@ -10,10 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/api/v1/match")
@@ -22,6 +19,7 @@ public class MatchController {
     @Autowired
     MatchService matchService;
 
+    @CrossOrigin("*")
     @GetMapping("/id")
     @ResponseBody
     @ApiOperation(value = "매치 아이디로 운영용 매치 세부 정보 조회.", response = ReducedMatchDto.class)
@@ -31,6 +29,7 @@ public class MatchController {
         return CodeResponse.successResult(reducedMatchDto);
     }
 
+    @CrossOrigin("*")
     @GetMapping("/list/summonerName")
     @ResponseBody
     @ApiOperation(value = "닉네임으로 매치 세부 정보 리스트 조회.", response = ReducedMatchlistDto.class)
