@@ -2,7 +2,9 @@ package gg.troll.report.api.controller;
 
 import gg.troll.report.api.assessment.model.dto.AssessmentDto;
 import gg.troll.report.api.assessment.model.dto.AssessmentListDto;
+import gg.troll.report.api.assessment.model.entity.Assessment;
 import gg.troll.report.api.assessment.model.request.AssessmentCommentRequest;
+import gg.troll.report.api.assessment.model.request.AssessmentCreateRequest;
 import gg.troll.report.api.assessment.model.request.AssessmentDeleteRequest;
 import gg.troll.report.api.assessment.service.AssessmentService;
 import gg.troll.report.base.model.CodeResponse;
@@ -18,6 +20,14 @@ public class AssessmentController {
 
     @Autowired
     AssessmentService assessmentService;
+
+    @PostMapping("")
+    @ResponseBody
+    public CodeResponse createAssessment(@RequestBody AssessmentCreateRequest request) throws NoSuchAlgorithmException {
+        Assessment savedAssessment = assessmentService.createAssessment(request.getGameId(), request.getAccountId(),
+                request.getAssessmentType(), request.getComment(), request.getPassword());
+        return CodeResponse.successResult(AssessmentDto.of(savedAssessment));
+    }
 
     @GetMapping("/id")
     @ResponseBody
