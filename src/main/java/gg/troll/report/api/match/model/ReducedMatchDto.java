@@ -17,6 +17,7 @@ public class ReducedMatchDto implements Serializable {
     private long gameId;
     private long gameDuration;
     private int mapId;
+    private List<ReducedParticipantIndentityDto> participantIdentities;
     private List<ReducedParticipantDto> participants;
 
     public static ReducedMatchDto of(MatchDto matchDto) {
@@ -26,10 +27,20 @@ public class ReducedMatchDto implements Serializable {
                 .mapId(matchDto.getMapId())
                 .build();
 
+        List<ReducedParticipantIndentityDto> participantIdentities = matchDto.getParticipantIdentities().stream()
+                .map(participantIdentityDto -> {
+                    return ReducedParticipantIndentityDto.builder()
+                            .participantId(participantIdentityDto.getParticipantId())
+                            .player(ReducedPlayerDto.of(participantIdentityDto.getPlayer()))
+                            .build();
+                })
+                .collect(Collectors.toList());
+
         List<ReducedParticipantDto> participants = matchDto.getParticipants().stream()
                 .map(ReducedParticipantDto::of)
                 .collect(Collectors.toList());
 
+        reducedMatchDto.setParticipantIdentities(participantIdentities);
         reducedMatchDto.setParticipants(participants);
         return reducedMatchDto;
     }
