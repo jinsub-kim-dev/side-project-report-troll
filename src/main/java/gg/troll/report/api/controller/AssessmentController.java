@@ -21,6 +21,7 @@ public class AssessmentController {
     @Autowired
     AssessmentService assessmentService;
 
+    @CrossOrigin("*")
     @PostMapping("")
     @ResponseBody
     public CodeResponse createAssessment(@RequestBody AssessmentCreateRequest request) throws NoSuchAlgorithmException {
@@ -29,6 +30,7 @@ public class AssessmentController {
         return CodeResponse.successResult(AssessmentDto.of(savedAssessment));
     }
 
+    @CrossOrigin("*")
     @GetMapping("/id")
     @ResponseBody
     public CodeResponse getAssessmentById(@RequestParam long assessmentId) {
@@ -36,6 +38,7 @@ public class AssessmentController {
         return CodeResponse.successResult(assessmentDto);
     }
 
+    @CrossOrigin("*")
     @GetMapping("/list/account/game")
     @ResponseBody
     public CodeResponse getAssessmentListByGameAndAccountId(
@@ -47,6 +50,7 @@ public class AssessmentController {
         return CodeResponse.successResult(assessmentListDto);
     }
 
+    @CrossOrigin("*")
     @PutMapping("/comment")
     @ResponseBody
     public CodeResponse updateAssessmentComment(@RequestBody AssessmentCommentRequest request) throws NoSuchAlgorithmException {
@@ -54,6 +58,7 @@ public class AssessmentController {
         return CodeResponse.success();
     }
 
+    @CrossOrigin("*")
     @DeleteMapping("/id")
     @ResponseBody
     public CodeResponse deleteAssessment(@RequestBody AssessmentDeleteRequest request) throws NoSuchAlgorithmException {
