@@ -17,6 +17,7 @@ public class ReducedParticipantDto implements Serializable {
     private int championId;
     private int spell1Id;
     private int spell2Id;
+    private ReducedPlayerDto player;
     private ReducedParticipantStatsDto stats;
 
     public static ReducedParticipantDto of(ParticipantDto participantDto) {
