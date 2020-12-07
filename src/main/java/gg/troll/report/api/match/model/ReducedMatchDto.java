@@ -1,5 +1,6 @@
 package gg.troll.report.api.match.model;
 
+import gg.troll.report.api.match.enums.QueueType;
 import lombok.*;
 
 import java.io.Serializable;
@@ -17,14 +18,16 @@ public class ReducedMatchDto implements Serializable {
 
     private long gameId;
     private long gameDuration;
-    private int mapId;
+    private int queueId;
+    private String queueDescription;
     private List<ReducedParticipantDto> participants;
 
     public static ReducedMatchDto of(MatchDto matchDto) {
         ReducedMatchDto reducedMatchDto = ReducedMatchDto.builder()
                 .gameId(matchDto.getGameId())
                 .gameDuration(matchDto.getGameDuration())
-                .mapId(matchDto.getMapId())
+                .queueId(matchDto.getQueueId())
+                .queueDescription(QueueType.of(matchDto.getQueueId()).getDescription())
                 .build();
 
         List<ReducedParticipantIndentityDto> participantIdentities = matchDto.getParticipantIdentities().stream()
