@@ -1,8 +1,10 @@
 package gg.troll.report.api.match.model;
 
+import gg.troll.report.api.match.enums.QueueType;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,15 +18,16 @@ public class ReducedMatchDto implements Serializable {
 
     private long gameId;
     private long gameDuration;
-    private int mapId;
-    private List<ReducedParticipantIndentityDto> participantIdentities;
+    private int queueId;
+    private String queueDescription;
     private List<ReducedParticipantDto> participants;
 
     public static ReducedMatchDto of(MatchDto matchDto) {
         ReducedMatchDto reducedMatchDto = ReducedMatchDto.builder()
                 .gameId(matchDto.getGameId())
                 .gameDuration(matchDto.getGameDuration())
-                .mapId(matchDto.getMapId())
+                .queueId(matchDto.getQueueId())
+                .queueDescription(QueueType.of(matchDto.getQueueId()).getDescription())
                 .build();
 
         List<ReducedParticipantIndentityDto> participantIdentities = matchDto.getParticipantIdentities().stream()
@@ -34,13 +37,18 @@ public class ReducedMatchDto implements Serializable {
                             .player(ReducedPlayerDto.of(participantIdentityDto.getPlayer()))
                             .build();
                 })
+                .sorted(Comparator.comparing(ReducedParticipantIndentityDto::getParticipantId))
                 .collect(Collectors.toList());
 
         List<ReducedParticipantDto> participants = matchDto.getParticipants().stream()
                 .map(ReducedParticipantDto::of)
+                .sorted(Comparator.comparing(ReducedParticipantDto::getParticipantId))
                 .collect(Collectors.toList());
 
-        reducedMatchDto.setParticipantIdentities(participantIdentities);
+        for (int i = 0; i < participants.size(); i++) {
+            participants.get(i).setPlayer(participantIdentities.get(i).getPlayer());
+        }
+
         reducedMatchDto.setParticipants(participants);
         return reducedMatchDto;
     }
