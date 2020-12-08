@@ -15,13 +15,19 @@ public class GlobalExceptionHandler {
     public CodeResponse handleException(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Exception exception) {
 
         ErrorCode errorCode;
+        String message;
 
-        if (exception instanceof BaseException) {
+        if (exception instanceof RiotRestApiTemplateException) {
+            errorCode = ((RiotRestApiTemplateException) exception).getErrorCode();
+            message = ((RiotRestApiTemplateException) exception).getMessage();
+        } else if (exception instanceof BaseException) {
             errorCode = ((BaseException) exception).getErrorCode();
+            message = ((BaseException) exception).getMessage();
         } else {
             errorCode = ErrorCode.UNKNOWN;
+            message = errorCode.getDefaultMessage();
         }
 
-        return CodeResponse.failCodeMessage(errorCode.getErrorCode(), errorCode.getMessage());
+        return CodeResponse.failCodeMessage(errorCode.getErrorCode(), message);
     }
 }
