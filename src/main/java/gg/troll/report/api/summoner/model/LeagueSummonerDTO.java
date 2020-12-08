@@ -16,6 +16,7 @@ public class LeagueSummonerDTO implements Serializable {
     private String accountId;
     private String id;
     private String name;
+    private int profileIconId;
     private long summonerLevel;
     private ReducedLeagueEntryDTO leagueEntry;
 }
