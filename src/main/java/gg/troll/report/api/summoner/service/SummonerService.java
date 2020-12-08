@@ -44,6 +44,7 @@ public class SummonerService {
                 .accountId(summonerDTO.getAccountId())
                 .id(summonerDTO.getId())
                 .name(summonerDTO.getName())
+                .profileIconId(summonerDTO.getProfileIconId())
                 .summonerLevel(summonerDTO.getSummonerLevel())
                 .leagueEntry(reducedLeagueEntryDTO)
                 .build();
