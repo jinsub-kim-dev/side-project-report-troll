@@ -4,20 +4,30 @@ public class BaseException extends RuntimeException {
     private static final long serialVersionUID = 5191119783869100903L;
 
     private ErrorCode errorCode;
+    private String message;
+
+    public BaseException(ErrorCode errorCode) {
+        super(errorCode.getDefaultMessage());
+        this.errorCode = errorCode;
+        this.message = errorCode.getDefaultMessage();
+    }
 
     public BaseException(ErrorCode errorCode, String message) {
         super(message);
         this.errorCode = errorCode;
+        this.message = message;
     }
 
     public BaseException(ErrorCode errorCode, Throwable throwable) {
         super(throwable);
         this.errorCode = errorCode;
+        this.message = errorCode.getDefaultMessage();
     }
 
     public BaseException(ErrorCode errorCode, String message, Throwable throwable) {
         super(message, throwable);
         this.errorCode = errorCode;
+        this.message = errorCode.getDefaultMessage();
     }
 
     public ErrorCode getErrorCode() {

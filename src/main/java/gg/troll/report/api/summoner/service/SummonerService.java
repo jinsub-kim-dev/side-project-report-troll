@@ -5,6 +5,8 @@ import gg.troll.report.api.league.model.ReducedLeagueEntryDTO;
 import gg.troll.report.api.league.service.LeagueService;
 import gg.troll.report.api.summoner.model.LeagueSummonerDTO;
 import gg.troll.report.api.summoner.model.SummonerDTO;
+import gg.troll.report.base.exception.ErrorCode;
+import gg.troll.report.base.exception.RiotRestApiTemplateException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -29,7 +31,8 @@ public class SummonerService {
             SummonerDTO summonerDTO = new ObjectMapper().readValue(body, SummonerDTO.class);
             return summonerDTO;
         } else {
-            throw new Exception();
+            String message = String.format("%d %s", response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
+            throw new RiotRestApiTemplateException(ErrorCode.RIOT_REST_API_TEMPLATE_FAIL, message);
         }
     }
 
