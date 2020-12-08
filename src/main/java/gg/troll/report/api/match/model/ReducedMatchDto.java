@@ -18,6 +18,7 @@ public class ReducedMatchDto implements Serializable {
 
     private long gameId;
     private long gameDuration;
+    private long gameCreation;
     private int queueId;
     private String queueDescription;
     private List<ReducedParticipantDto> participants;
@@ -26,6 +27,7 @@ public class ReducedMatchDto implements Serializable {
         ReducedMatchDto reducedMatchDto = ReducedMatchDto.builder()
                 .gameId(matchDto.getGameId())
                 .gameDuration(matchDto.getGameDuration())
+                .gameCreation(matchDto.getGameCreation())
                 .queueId(matchDto.getQueueId())
                 .queueDescription(QueueType.of(matchDto.getQueueId()).getDescription())
                 .build();
