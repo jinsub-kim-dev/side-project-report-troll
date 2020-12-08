@@ -96,7 +96,7 @@ public class AssessmentServiceTests {
 
         long fromAssessmentId = 0L;
         int size = 3;
-        AssessmentListDto assessmentListDto = assessmentService.getAssessmentListDto(testGameId, testAccountId, fromAssessmentId, size);
+        AssessmentListDto assessmentListDto = assessmentService.getAssessmentListDtoByGameAndAccountId(testGameId, testAccountId, fromAssessmentId, size);
         assertThat(assessmentListDto.getAssessments().get(0).getComment()).isEqualTo(testComments.get(NUM_OF_ASSESSMENTS-1));
         assertThat(assessmentListDto.getLastAssessmentId()).isEqualTo(assessments.get(NUM_OF_ASSESSMENTS-size).getAssessmentId());
         assertThat(assessmentListDto.isAllowMore()).isTrue();

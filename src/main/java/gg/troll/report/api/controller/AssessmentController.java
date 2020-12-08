@@ -42,6 +42,18 @@ public class AssessmentController {
     }
 
     @CrossOrigin("*")
+    @GetMapping("/list/account")
+    @ResponseBody
+    @ApiOperation(value = "accountId에 해당하는 평가 리스트 조회", response = AssessmentListDto.class)
+    public CodeResponse getAssessmentListByAccountId(
+            @RequestParam String accountId,
+            @RequestParam(defaultValue = "0") long fromAssessmentId,
+            @RequestParam(defaultValue = "10") int size) {
+        AssessmentListDto assessmentListDto = assessmentService.getAssessmentListDtoByAccountId(accountId, fromAssessmentId, size);
+        return CodeResponse.successResult(assessmentListDto);
+    }
+
+    @CrossOrigin("*")
     @GetMapping("/list/account/game")
     @ResponseBody
     @ApiOperation(value = "gameId와 accountId에 해당하는 평가 리스트 조회", response = AssessmentListDto.class)
@@ -50,7 +62,7 @@ public class AssessmentController {
             @RequestParam String accountId,
             @RequestParam(defaultValue = "0") long fromAssessmentId,
             @RequestParam(defaultValue = "10") int size) {
-        AssessmentListDto assessmentListDto = assessmentService.getAssessmentListDto(gameId, accountId, fromAssessmentId, size);
+        AssessmentListDto assessmentListDto = assessmentService.getAssessmentListDtoByGameAndAccountId(gameId, accountId, fromAssessmentId, size);
         return CodeResponse.successResult(assessmentListDto);
     }
 

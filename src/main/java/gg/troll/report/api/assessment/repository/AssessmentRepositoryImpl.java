@@ -15,12 +15,26 @@ public class AssessmentRepositoryImpl implements AssessmentRepositoryCustom {
     JPAQueryFactory queryFactory;
 
     @Override
+    public List<Assessment> findByAccountId(String accountId, long fromAssessmentId, int size) {
+        QAssessment assessment = QAssessment.assessment;
+
+        return queryFactory.selectFrom(assessment)
+                .where(assessment.accountId.eq(accountId)
+                        .and(assessment.deleted.isFalse())
+                        .and(assessment.assessmentId.lt(fromAssessmentId)))
+                .orderBy(assessment.assessmentId.desc())
+                .limit(size)
+                .fetch();
+    }
+
+    @Override
     public List<Assessment> findByGameIdAndAccountId(long gameId, String accountId, long fromAssessmentId, int size) {
         QAssessment assessment = QAssessment.assessment;
 
         return queryFactory.selectFrom(assessment)
                 .where(assessment.gameId.eq(gameId)
                         .and(assessment.accountId.eq(accountId))
+                        .and(assessment.deleted.isFalse())
                         .and(assessment.assessmentId.lt(fromAssessmentId)))
                 .orderBy(assessment.assessmentId.desc())
                 .limit(size)
