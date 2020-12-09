@@ -25,7 +25,7 @@ public class LeagueService {
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             String body = new BasicResponseHandler().handleResponse(response);
             List<LeagueEntryDTO> leagueEntryDTOList = new ObjectMapper().readValue(body, new TypeReference<List<LeagueEntryDTO>>(){});
-            return leagueEntryDTOList.get(0);
+            return leagueEntryDTOList.size() > 0 ? leagueEntryDTOList.get(0) : new LeagueEntryDTO();
         } else {
             throw new Exception();
         }
