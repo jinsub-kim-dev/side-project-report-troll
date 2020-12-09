@@ -10,6 +10,8 @@ import gg.troll.report.base.exception.ErrorCode;
 import gg.troll.report.base.helper.CryptoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -21,6 +23,7 @@ public class AssessmentService {
     @Autowired
     AssessmentRepository assessmentRepository;
 
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public Assessment createAssessment(long gameId, String accountId, AssessmentType assessmentType, String comment, String password) throws NoSuchAlgorithmException {
         Assessment savedAssessment = assessmentRepository.save(Assessment.builder()
                 .gameId(gameId)
@@ -87,6 +90,7 @@ public class AssessmentService {
                 .build();
     }
 
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public void updateAssessmentComment(long assessmentId, String comment, String password) throws NoSuchAlgorithmException {
         Assessment assessment = getAssessmentById(assessmentId);
         String hashedPassword = CryptoHelper.getSha256HashedString(password);
@@ -97,6 +101,7 @@ public class AssessmentService {
         assessment.modifyComment(comment);
     }
 
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public void deleteAssessment(long assessmentId, String password) throws NoSuchAlgorithmException {
         Assessment assessment = getAssessmentById(assessmentId);
         String hashedPassword = CryptoHelper.getSha256HashedString(password);
