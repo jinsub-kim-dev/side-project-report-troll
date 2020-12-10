@@ -1,6 +1,7 @@
 package gg.troll.report.api.assessment.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import gg.troll.report.api.assessment.enums.AssessmentType;
 import gg.troll.report.api.assessment.model.entity.Assessment;
 import gg.troll.report.api.assessment.model.entity.QAssessment;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +40,16 @@ public class AssessmentRepositoryImpl implements AssessmentRepositoryCustom {
                 .orderBy(assessment.assessmentId.desc())
                 .limit(size)
                 .fetch();
+    }
+
+    @Override
+    public long countNotDeletedAssessments(String accountId, AssessmentType assessmentType) {
+        QAssessment assessment = QAssessment.assessment;
+
+        return queryFactory.selectFrom(assessment)
+                .where(assessment.accountId.eq(accountId)
+                        .and(assessment.assessmentType.eq(assessmentType))
+                        .and(assessment.deleted.isFalse()))
+                .fetchCount();
     }
 }

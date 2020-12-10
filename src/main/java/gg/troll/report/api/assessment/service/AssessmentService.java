@@ -111,4 +111,8 @@ public class AssessmentService {
 
         assessment.deleteAssessment();
     }
+
+    public long countNotDeletedAssessmentByAccountId(String accountId, AssessmentType assessmentType) {
+        return assessmentRepository.countNotDeletedAssessments(accountId, assessmentType);
+    }
 }
