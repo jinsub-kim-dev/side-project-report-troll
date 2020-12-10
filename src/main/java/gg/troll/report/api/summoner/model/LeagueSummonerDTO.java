@@ -4,6 +4,7 @@ import gg.troll.report.api.league.model.ReducedLeagueEntryDTO;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,5 +19,5 @@ public class LeagueSummonerDTO implements Serializable {
     private String name;
     private int profileIconId;
     private long summonerLevel;
-    private ReducedLeagueEntryDTO leagueEntry;
+    private List<ReducedLeagueEntryDTO> leagueEntries;
 }

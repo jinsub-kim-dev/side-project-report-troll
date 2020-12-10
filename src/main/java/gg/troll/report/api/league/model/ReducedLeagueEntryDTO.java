@@ -1,5 +1,6 @@
 package gg.troll.report.api.league.model;
 
+import gg.troll.report.api.match.enums.QueueType;
 import lombok.*;
 
 import java.io.Serializable;
@@ -15,6 +16,7 @@ public class ReducedLeagueEntryDTO implements Serializable {
     private String leagueId;
     private String summonerId;
     private String summonerName;
+    private String queueDescription;
     private String tier;
     private String rank;
     private int leaguePoints;
@@ -26,6 +28,7 @@ public class ReducedLeagueEntryDTO implements Serializable {
                 .leagueId(leagueEntryDTO.getLeagueId())
                 .summonerId(leagueEntryDTO.getSummonerId())
                 .summonerName(leagueEntryDTO.getSummonerName())
+                .queueDescription(QueueType.of(leagueEntryDTO.getQueueType()).getDescription())
                 .tier(leagueEntryDTO.getTier())
                 .rank(leagueEntryDTO.getRank())
                 .leaguePoints(leagueEntryDTO.getLeaguePoints())

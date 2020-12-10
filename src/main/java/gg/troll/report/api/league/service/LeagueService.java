@@ -14,25 +14,28 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class LeagueService {
 
-    public LeagueEntryDTO getLeagueEntryDTO(String riotApiKey, String encryptedSummonerId) throws Exception {
+    public List<LeagueEntryDTO> getLeagueEntryDTOList(String riotApiKey, String encryptedSummonerId) throws Exception {
         String requestURL = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/"+ encryptedSummonerId + "?api_key=" + riotApiKey;
 
         HttpResponse response = HttpClientBuilder.create().build().execute(new HttpGet(requestURL));
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             String body = new BasicResponseHandler().handleResponse(response);
             List<LeagueEntryDTO> leagueEntryDTOList = new ObjectMapper().readValue(body, new TypeReference<List<LeagueEntryDTO>>(){});
-            return leagueEntryDTOList.size() > 0 ? leagueEntryDTOList.get(0) : new LeagueEntryDTO();
+            return leagueEntryDTOList;
         } else {
             throw new Exception();
         }
     }
 
-    public ReducedLeagueEntryDTO getReducedLeagueEntryDTO(String riotApiKey, String encryptedSummonerId) throws Exception {
-        LeagueEntryDTO leagueEntryDTO = getLeagueEntryDTO(riotApiKey, encryptedSummonerId);
-        return ReducedLeagueEntryDTO.of(leagueEntryDTO);
+    public List<ReducedLeagueEntryDTO> getReducedLeagueEntryDTOList(String riotApiKey, String encryptedSummonerId) throws Exception {
+        List<LeagueEntryDTO> leagueEntryDTOList = getLeagueEntryDTOList(riotApiKey, encryptedSummonerId);
+        return leagueEntryDTOList.stream()
+                .map(ReducedLeagueEntryDTO::of)
+                .collect(Collectors.toList());
     }
 }
