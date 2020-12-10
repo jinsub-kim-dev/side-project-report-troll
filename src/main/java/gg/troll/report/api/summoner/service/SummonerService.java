@@ -15,6 +15,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SummonerService {
 
@@ -39,14 +41,14 @@ public class SummonerService {
     public LeagueSummonerDTO getLeagueSummonerByName(String riotApiKey, String summonerName) throws Exception {
         SummonerDTO summonerDTO = getSummonerByName(riotApiKey, summonerName);
         String encryptedSummonerId = summonerDTO.getId();
-        ReducedLeagueEntryDTO reducedLeagueEntryDTO = leagueService.getReducedLeagueEntryDTO(riotApiKey, encryptedSummonerId);
+        List<ReducedLeagueEntryDTO> reducedLeagueEntryDTOList = leagueService.getReducedLeagueEntryDTOList(riotApiKey, encryptedSummonerId);
         return LeagueSummonerDTO.builder()
                 .accountId(summonerDTO.getAccountId())
                 .id(summonerDTO.getId())
                 .name(summonerDTO.getName())
                 .profileIconId(summonerDTO.getProfileIconId())
                 .summonerLevel(summonerDTO.getSummonerLevel())
-                .leagueEntry(reducedLeagueEntryDTO)
+                .leagueEntries(reducedLeagueEntryDTOList)
                 .build();
     }
 }
