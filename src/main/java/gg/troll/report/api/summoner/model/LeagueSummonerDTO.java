@@ -14,6 +14,9 @@ import java.util.List;
 public class LeagueSummonerDTO implements Serializable {
     private static final long serialVersionUID = -4467860473289866111L;
 
+    private long complimentAssessments;
+    private long reportAssessments;
+
     private String accountId;
     private String id;
     private String name;

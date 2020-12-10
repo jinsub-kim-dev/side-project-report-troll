@@ -10,11 +10,12 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Entity
+@Table(name = "tb_assessment")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "tb_assessment")
 public class Assessment extends BaseTimeEntity {
 
     @Id
