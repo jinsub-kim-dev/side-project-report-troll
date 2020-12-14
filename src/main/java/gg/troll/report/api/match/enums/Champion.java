@@ -152,6 +152,7 @@ public enum Champion {
     SYLAS(517, "Sylas", "사일러스"),
     NEEKO(518, "Neeko", "니코"),
     APHELIOS(523, "Aphelios", "아펠리오스"),
+    RELL(526, "Rell", "렐"),
     PYKE(555, "Pyke", "파이크"),
     YONE(777, "Yone", "요네"),
     SETT(875, "Sett", "세트"),
