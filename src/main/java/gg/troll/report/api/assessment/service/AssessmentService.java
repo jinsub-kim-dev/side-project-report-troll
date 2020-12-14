@@ -3,6 +3,7 @@ package gg.troll.report.api.assessment.service;
 import gg.troll.report.api.assessment.enums.AssessmentType;
 import gg.troll.report.api.assessment.model.dto.AssessmentDto;
 import gg.troll.report.api.assessment.model.dto.AssessmentListDto;
+import gg.troll.report.api.assessment.model.dto.SummonerAssessmentMetaDto;
 import gg.troll.report.api.assessment.model.entity.Assessment;
 import gg.troll.report.api.assessment.repository.AssessmentRepository;
 import gg.troll.report.base.exception.BaseException;
@@ -112,7 +113,14 @@ public class AssessmentService {
         assessment.deleteAssessment();
     }
 
-    public long countNotDeletedAssessmentByAccountId(String accountId, AssessmentType assessmentType) {
+    public SummonerAssessmentMetaDto getSummonerAssessmentMetaDto(String accountId) {
+        return SummonerAssessmentMetaDto.builder()
+                .totalComplimentAssessments(countNotDeletedAssessmentByAccountId(accountId, AssessmentType.COMPLIMENT))
+                .totalReportAssessments(countNotDeletedAssessmentByAccountId(accountId, AssessmentType.REPORT))
+                .build();
+    }
+
+    private long countNotDeletedAssessmentByAccountId(String accountId, AssessmentType assessmentType) {
         return assessmentRepository.countNotDeletedAssessments(accountId, assessmentType);
     }
 }
