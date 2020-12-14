@@ -57,8 +57,7 @@ public class MatchService {
         return ReducedMatchDto.of(matchDto);
     }
 
-    public ReducedMatchlistDto getReducedMatchListBySummonerName(String riotApiKey, String summonerName, int beginIndex, int endIndex) throws Exception {
-        SummonerDTO summonerDTO = summonerService.getSummonerByName(riotApiKey, summonerName);
+    public ReducedMatchlistDto getReducedMatchListBySummonerDto(String riotApiKey, SummonerDTO summonerDTO, int beginIndex, int endIndex) throws Exception {
         String encryptedAccountId = summonerDTO.getAccountId();
 
         MatchlistDto matchlistDto = getMatchListByEncryptedAccountId(riotApiKey, encryptedAccountId, beginIndex, endIndex);
@@ -79,5 +78,10 @@ public class MatchService {
                 .totalGames(matchlistDto.getTotalGames())
                 .matches(matches)
                 .build();
+    }
+
+    public ReducedMatchlistDto getReducedMatchListBySummonerName(String riotApiKey, String summonerName, int beginIndex, int endIndex) throws Exception {
+        SummonerDTO summonerDTO = summonerService.getSummonerByName(riotApiKey, summonerName);
+        return getReducedMatchListBySummonerDto(riotApiKey, summonerDTO, beginIndex, endIndex);
     }
 }
