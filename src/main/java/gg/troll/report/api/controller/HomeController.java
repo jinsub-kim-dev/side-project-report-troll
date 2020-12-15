@@ -7,6 +7,7 @@ import gg.troll.report.api.home.service.HomeService;
 import gg.troll.report.base.model.CodeResponse;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ public class HomeController {
     @CrossOrigin("*")
     @GetMapping("")
     @ResponseBody
+    @ApiOperation(value = "닉네임 검색으로 초기 데이터를 불러온다.", response = HomeResponseDto.class)
     public CodeResponse getHomeResponse(
             @RequestParam String summonerName,
             @RequestParam(defaultValue = "0") long fromAssessmentId,
