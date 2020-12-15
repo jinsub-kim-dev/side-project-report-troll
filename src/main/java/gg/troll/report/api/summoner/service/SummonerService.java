@@ -1,9 +1,6 @@
 package gg.troll.report.api.summoner.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gg.troll.report.api.assessment.enums.AssessmentType;
-import gg.troll.report.api.assessment.model.entity.Assessment;
-import gg.troll.report.api.assessment.service.AssessmentService;
 import gg.troll.report.api.league.model.ReducedLeagueEntryDTO;
 import gg.troll.report.api.league.service.LeagueService;
 import gg.troll.report.api.summoner.model.LeagueSummonerDTO;
@@ -16,6 +13,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,10 +23,11 @@ public class SummonerService {
 
     @Autowired
     LeagueService leagueService;
-    @Autowired
-    AssessmentService assessmentService;
 
-    public SummonerDTO getSummonerByName(String riotApiKey, String summonerName) throws Exception {
+    @Value("${riot.api.key}")
+    String riotApiKey;
+
+    public SummonerDTO getSummonerByName(String summonerName) throws Exception {
         summonerName = summonerName.replaceAll(" ", "%20");
         String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/"+ summonerName + "?api_key=" + riotApiKey;
 
@@ -43,14 +42,10 @@ public class SummonerService {
         }
     }
 
-    public LeagueSummonerDTO getLeagueSummonerByName(String riotApiKey, String summonerName) throws Exception {
-        SummonerDTO summonerDTO = getSummonerByName(riotApiKey, summonerName);
-        String encryptedAccountId = summonerDTO.getAccountId();
+    public LeagueSummonerDTO getLeagueSummonerBySummonerDto(SummonerDTO summonerDTO) throws Exception {
         String encryptedSummonerId = summonerDTO.getId();
-        List<ReducedLeagueEntryDTO> reducedLeagueEntryDTOList = leagueService.getReducedLeagueEntryDTOList(riotApiKey, encryptedSummonerId);
+        List<ReducedLeagueEntryDTO> reducedLeagueEntryDTOList = leagueService.getReducedLeagueEntryDTOList(encryptedSummonerId);
         return LeagueSummonerDTO.builder()
-                .complimentAssessments(assessmentService.countNotDeletedAssessmentByAccountId(encryptedAccountId, AssessmentType.COMPLIMENT))
-                .reportAssessments(assessmentService.countNotDeletedAssessmentByAccountId(encryptedAccountId, AssessmentType.REPORT))
                 .accountId(summonerDTO.getAccountId())
                 .id(summonerDTO.getId())
                 .name(summonerDTO.getName())
@@ -58,5 +53,10 @@ public class SummonerService {
                 .summonerLevel(summonerDTO.getSummonerLevel())
                 .leagueEntries(reducedLeagueEntryDTOList)
                 .build();
+    }
+
+    public LeagueSummonerDTO getLeagueSummonerByName(String summonerName) throws Exception {
+        SummonerDTO summonerDTO = getSummonerByName(summonerName);
+        return getLeagueSummonerBySummonerDto(summonerDTO);
     }
 }
