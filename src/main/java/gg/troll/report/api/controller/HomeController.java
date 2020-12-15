@@ -21,9 +21,7 @@ public class HomeController {
     @CrossOrigin("*")
     @GetMapping("")
     @ResponseBody
-    @ApiImplicitParams({@ApiImplicitParam(name = "Riot-API-Key",  required = true, dataType = "string", paramType = "header")})
     public CodeResponse getHomeResponse(
-            @ApiParam(hidden = true) String riotApiKey,
             @RequestParam String summonerName,
             @RequestParam(defaultValue = "0") long fromAssessmentId,
             @RequestParam(defaultValue = "10") int size,
@@ -31,7 +29,7 @@ public class HomeController {
             @RequestParam(required = false, defaultValue = "5") int endIndex) throws Exception {
         AssessmentsRequest assessmentsRequest = AssessmentsRequest.builder().fromAssessmentId(fromAssessmentId).size(size).build();
         MatchesRequest matchesRequest = MatchesRequest.builder().beginIndex(beginIndex).endIndex(endIndex).build();
-        HomeResponseDto homeResponseDto = homeService.getHomeResponseDto(riotApiKey, summonerName, assessmentsRequest, matchesRequest);
+        HomeResponseDto homeResponseDto = homeService.getHomeResponseDto(summonerName, assessmentsRequest, matchesRequest);
         return CodeResponse.successResult(homeResponseDto);
     }
 }

@@ -23,12 +23,12 @@ public class HomeService {
     @Autowired
     AssessmentService assessmentService;
 
-    public HomeResponseDto getHomeResponseDto(String riotApiKey, String summonerName, AssessmentsRequest assessmentsRequest, MatchesRequest matchesRequest) throws Exception {
-        SummonerDTO summonerDTO = summonerService.getSummonerByName(riotApiKey, summonerName);
+    public HomeResponseDto getHomeResponseDto(String summonerName, AssessmentsRequest assessmentsRequest, MatchesRequest matchesRequest) throws Exception {
+        SummonerDTO summonerDTO = summonerService.getSummonerByName(summonerName);
         SummonerAssessmentMetaDto summonerAssessmentMetaDto = assessmentService.getSummonerAssessmentMetaDto(summonerDTO.getAccountId());
         AssessmentListDto assessmentListDto = assessmentService.getAssessmentListDtoByAccountId(summonerDTO.getAccountId(), assessmentsRequest.getFromAssessmentId(), assessmentsRequest.getSize());
-        LeagueSummonerDTO leagueSummonerDTO = summonerService.getLeagueSummonerBySummonerDto(riotApiKey, summonerDTO);
-        ReducedMatchlistDto reducedMatchlistDto = matchService.getReducedMatchListBySummonerDto(riotApiKey, summonerDTO, matchesRequest.getBeginIndex(), matchesRequest.getEndIndex());
+        LeagueSummonerDTO leagueSummonerDTO = summonerService.getLeagueSummonerBySummonerDto(summonerDTO);
+        ReducedMatchlistDto reducedMatchlistDto = matchService.getReducedMatchListBySummonerDto(summonerDTO, matchesRequest.getBeginIndex(), matchesRequest.getEndIndex());
 
         return HomeResponseDto.builder()
                 .summonerAssessmentMeta(summonerAssessmentMetaDto)

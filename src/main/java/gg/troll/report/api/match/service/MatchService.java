@@ -13,6 +13,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +25,10 @@ public class MatchService {
     @Autowired
     SummonerService summonerService;
 
-    public MatchlistDto getMatchListByEncryptedAccountId(String riotApiKey, String encryptedAccountId, int beginIndex, int endIndex) throws Exception {
+    @Value("${riot.api.key}")
+    String riotApiKey;
+
+    public MatchlistDto getMatchListByEncryptedAccountId(String encryptedAccountId, int beginIndex, int endIndex) throws Exception {
         String requestURL = "https://kr.api.riotgames.com/lol/match/v4/matchlists/by-account/"+ encryptedAccountId + "?api_key=" + riotApiKey;
         requestURL = beginIndex > 0 ? requestURL + "&beginIndex=" + beginIndex : requestURL;
         requestURL = endIndex > 0 ? requestURL + "&endIndex=" + endIndex : requestURL;
@@ -39,7 +43,7 @@ public class MatchService {
         }
     }
 
-    public MatchDto getMatchById(String riotApiKey, long matchId) throws Exception {
+    public MatchDto getMatchById(long matchId) throws Exception {
         String requestURL = "https://kr.api.riotgames.com/lol/match/v4/matches/"+ matchId + "?api_key=" + riotApiKey;
 
         HttpResponse response = HttpClientBuilder.create().build().execute(new HttpGet(requestURL));
@@ -52,19 +56,19 @@ public class MatchService {
         }
     }
 
-    public ReducedMatchDto getReducedMatchById(String riotApiKey, long matchId) throws Exception {
-        MatchDto matchDto = getMatchById(riotApiKey, matchId);
+    public ReducedMatchDto getReducedMatchById(long matchId) throws Exception {
+        MatchDto matchDto = getMatchById(matchId);
         return ReducedMatchDto.of(matchDto);
     }
 
-    public ReducedMatchlistDto getReducedMatchListBySummonerDto(String riotApiKey, SummonerDTO summonerDTO, int beginIndex, int endIndex) throws Exception {
+    public ReducedMatchlistDto getReducedMatchListBySummonerDto(SummonerDTO summonerDTO, int beginIndex, int endIndex) throws Exception {
         String encryptedAccountId = summonerDTO.getAccountId();
 
-        MatchlistDto matchlistDto = getMatchListByEncryptedAccountId(riotApiKey, encryptedAccountId, beginIndex, endIndex);
+        MatchlistDto matchlistDto = getMatchListByEncryptedAccountId(encryptedAccountId, beginIndex, endIndex);
         List<ReducedMatchDto> matches = matchlistDto.getMatches().stream()
                 .map(matchReferenceDto -> {
                     try {
-                        return getReducedMatchById(riotApiKey, matchReferenceDto.getGameId());
+                        return getReducedMatchById(matchReferenceDto.getGameId());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -80,8 +84,8 @@ public class MatchService {
                 .build();
     }
 
-    public ReducedMatchlistDto getReducedMatchListBySummonerName(String riotApiKey, String summonerName, int beginIndex, int endIndex) throws Exception {
-        SummonerDTO summonerDTO = summonerService.getSummonerByName(riotApiKey, summonerName);
-        return getReducedMatchListBySummonerDto(riotApiKey, summonerDTO, beginIndex, endIndex);
+    public ReducedMatchlistDto getReducedMatchListBySummonerName(String summonerName, int beginIndex, int endIndex) throws Exception {
+        SummonerDTO summonerDTO = summonerService.getSummonerByName(summonerName);
+        return getReducedMatchListBySummonerDto(summonerDTO, beginIndex, endIndex);
     }
 }
