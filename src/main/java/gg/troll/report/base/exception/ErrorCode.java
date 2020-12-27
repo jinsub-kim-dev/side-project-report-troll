@@ -27,4 +27,13 @@ public enum ErrorCode {
         this.errorCode = errorCode;
         this.defaultMessage = defaultMessage;
     }
+
+    public static ErrorCode of(int errorCode) {
+        for (ErrorCode code : values()) {
+            if (code.getErrorCode() == errorCode) {
+                return code;
+            }
+        }
+        return ErrorCode.UNKNOWN;
+    }
 }
