@@ -1,12 +1,10 @@
 package gg.troll.report.api.match.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gg.troll.report.api.match.model.MatchDto;
-import gg.troll.report.api.match.model.MatchlistDto;
-import gg.troll.report.api.match.model.ReducedMatchDto;
-import gg.troll.report.api.match.model.ReducedMatchlistDto;
+import gg.troll.report.api.match.model.*;
 import gg.troll.report.api.summoner.model.SummonerDTO;
 import gg.troll.report.api.summoner.service.SummonerService;
+import gg.troll.report.base.exception.RiotRestApiTemplateException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -16,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MatchService {
@@ -39,7 +37,7 @@ public class MatchService {
             MatchlistDto matchlistDto = new ObjectMapper().readValue(body, MatchlistDto.class);
             return matchlistDto;
         } else {
-            throw new Exception();
+            throw RiotRestApiTemplateException.of(response);
         }
     }
 
@@ -52,7 +50,7 @@ public class MatchService {
             MatchDto matchDto = new ObjectMapper().readValue(body, MatchDto.class);
             return matchDto;
         } else {
-            throw new Exception();
+            throw RiotRestApiTemplateException.of(response);
         }
     }
 
@@ -65,16 +63,10 @@ public class MatchService {
         String encryptedAccountId = summonerDTO.getAccountId();
 
         MatchlistDto matchlistDto = getMatchListByEncryptedAccountId(encryptedAccountId, beginIndex, endIndex);
-        List<ReducedMatchDto> matches = matchlistDto.getMatches().stream()
-                .map(matchReferenceDto -> {
-                    try {
-                        return getReducedMatchById(matchReferenceDto.getGameId());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                })
-                .collect(Collectors.toList());
+        List<ReducedMatchDto> matches = new ArrayList<>();
+        for (MatchReferenceDto matchReferenceDto : matchlistDto.getMatches()) {
+            matches.add(getReducedMatchById(matchReferenceDto.getGameId()));
+        }
 
         return ReducedMatchlistDto.builder()
                 .startIndex(matchlistDto.getStartIndex())
