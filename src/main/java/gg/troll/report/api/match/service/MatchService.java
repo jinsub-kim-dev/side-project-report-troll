@@ -1,22 +1,21 @@
 package gg.troll.report.api.match.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gg.troll.report.api.match.model.MatchDto;
-import gg.troll.report.api.match.model.MatchlistDto;
-import gg.troll.report.api.match.model.ReducedMatchDto;
-import gg.troll.report.api.match.model.ReducedMatchlistDto;
+import gg.troll.report.api.match.model.*;
 import gg.troll.report.api.summoner.model.SummonerDTO;
 import gg.troll.report.api.summoner.service.SummonerService;
+import gg.troll.report.base.exception.RiotRestApiTemplateException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MatchService {
@@ -24,7 +23,10 @@ public class MatchService {
     @Autowired
     SummonerService summonerService;
 
-    public MatchlistDto getMatchListByEncryptedAccountId(String riotApiKey, String encryptedAccountId, int beginIndex, int endIndex) throws Exception {
+    @Value("${riot.api.key}")
+    String riotApiKey;
+
+    public MatchlistDto getMatchListByEncryptedAccountId(String encryptedAccountId, int beginIndex, int endIndex) throws Exception {
         String requestURL = "https://kr.api.riotgames.com/lol/match/v4/matchlists/by-account/"+ encryptedAccountId + "?api_key=" + riotApiKey;
         requestURL = beginIndex > 0 ? requestURL + "&beginIndex=" + beginIndex : requestURL;
         requestURL = endIndex > 0 ? requestURL + "&endIndex=" + endIndex : requestURL;
@@ -35,11 +37,11 @@ public class MatchService {
             MatchlistDto matchlistDto = new ObjectMapper().readValue(body, MatchlistDto.class);
             return matchlistDto;
         } else {
-            throw new Exception();
+            throw RiotRestApiTemplateException.of(response);
         }
     }
 
-    public MatchDto getMatchById(String riotApiKey, long matchId) throws Exception {
+    public MatchDto getMatchById(long matchId) throws Exception {
         String requestURL = "https://kr.api.riotgames.com/lol/match/v4/matches/"+ matchId + "?api_key=" + riotApiKey;
 
         HttpResponse response = HttpClientBuilder.create().build().execute(new HttpGet(requestURL));
@@ -48,30 +50,23 @@ public class MatchService {
             MatchDto matchDto = new ObjectMapper().readValue(body, MatchDto.class);
             return matchDto;
         } else {
-            throw new Exception();
+            throw RiotRestApiTemplateException.of(response);
         }
     }
 
-    public ReducedMatchDto getReducedMatchById(String riotApiKey, long matchId) throws Exception {
-        MatchDto matchDto = getMatchById(riotApiKey, matchId);
+    public ReducedMatchDto getReducedMatchById(long matchId) throws Exception {
+        MatchDto matchDto = getMatchById(matchId);
         return ReducedMatchDto.of(matchDto);
     }
 
-    public ReducedMatchlistDto getReducedMatchListBySummonerName(String riotApiKey, String summonerName, int beginIndex, int endIndex) throws Exception {
-        SummonerDTO summonerDTO = summonerService.getSummonerByName(riotApiKey, summonerName);
+    public ReducedMatchlistDto getReducedMatchListBySummonerDto(SummonerDTO summonerDTO, int beginIndex, int endIndex) throws Exception {
         String encryptedAccountId = summonerDTO.getAccountId();
 
-        MatchlistDto matchlistDto = getMatchListByEncryptedAccountId(riotApiKey, encryptedAccountId, beginIndex, endIndex);
-        List<ReducedMatchDto> matches = matchlistDto.getMatches().stream()
-                .map(matchReferenceDto -> {
-                    try {
-                        return getReducedMatchById(riotApiKey, matchReferenceDto.getGameId());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                })
-                .collect(Collectors.toList());
+        MatchlistDto matchlistDto = getMatchListByEncryptedAccountId(encryptedAccountId, beginIndex, endIndex);
+        List<ReducedMatchDto> matches = new ArrayList<>();
+        for (MatchReferenceDto matchReferenceDto : matchlistDto.getMatches()) {
+            matches.add(getReducedMatchById(matchReferenceDto.getGameId()));
+        }
 
         return ReducedMatchlistDto.builder()
                 .startIndex(matchlistDto.getStartIndex())
@@ -79,5 +74,10 @@ public class MatchService {
                 .totalGames(matchlistDto.getTotalGames())
                 .matches(matches)
                 .build();
+    }
+
+    public ReducedMatchlistDto getReducedMatchListBySummonerName(String summonerName, int beginIndex, int endIndex) throws Exception {
+        SummonerDTO summonerDTO = summonerService.getSummonerByName(summonerName);
+        return getReducedMatchListBySummonerDto(summonerDTO, beginIndex, endIndex);
     }
 }

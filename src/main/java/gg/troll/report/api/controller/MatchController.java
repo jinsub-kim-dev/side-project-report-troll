@@ -23,9 +23,8 @@ public class MatchController {
     @GetMapping("/id")
     @ResponseBody
     @ApiOperation(value = "매치 아이디로 운영용 매치 세부 정보 조회.", response = ReducedMatchDto.class)
-    @ApiImplicitParams({@ApiImplicitParam(name = "Riot-API-Key",  required = true, dataType = "string", paramType = "header")})
     public CodeResponse getReducedMatchById(@ApiParam(hidden = true) String riotApiKey, @RequestParam long matchId) throws Exception {
-        ReducedMatchDto reducedMatchDto = matchService.getReducedMatchById(riotApiKey, matchId);
+        ReducedMatchDto reducedMatchDto = matchService.getReducedMatchById(matchId);
         return CodeResponse.successResult(reducedMatchDto);
     }
 
@@ -33,13 +32,12 @@ public class MatchController {
     @GetMapping("/list/summonerName")
     @ResponseBody
     @ApiOperation(value = "닉네임으로 매치 세부 정보 리스트 조회.", response = ReducedMatchlistDto.class)
-    @ApiImplicitParams({@ApiImplicitParam(name = "Riot-API-Key",  required = true, dataType = "string", paramType = "header")})
     public CodeResponse getReducedMatchListBySummonerName(
             @ApiParam(hidden = true) String riotApiKey,
             @RequestParam String summonerName,
             @RequestParam(required = false, defaultValue = "0") int beginIndex,
             @RequestParam(required = false, defaultValue = "0") int endIndex) throws Exception {
-        ReducedMatchlistDto reducedMatchlistDto = matchService.getReducedMatchListBySummonerName(riotApiKey, summonerName, beginIndex, endIndex);
+        ReducedMatchlistDto reducedMatchlistDto = matchService.getReducedMatchListBySummonerName(summonerName, beginIndex, endIndex);
         return CodeResponse.successResult(reducedMatchlistDto);
     }
 }

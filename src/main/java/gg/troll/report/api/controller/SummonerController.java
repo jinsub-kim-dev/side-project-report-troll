@@ -20,9 +20,8 @@ public class SummonerController {
     @CrossOrigin("*")
     @GetMapping("/name")
     @ResponseBody
-    @ApiImplicitParams({@ApiImplicitParam(name = "Riot-API-Key",  required = true, dataType = "string", paramType = "header")})
     public CodeResponse getLeagueSummonerByName(@ApiParam(hidden = true) String riotApiKey,  @RequestParam String summonerName) throws Exception {
-        LeagueSummonerDTO leagueSummonerDTO = summonerService.getLeagueSummonerByName(riotApiKey, summonerName);
+        LeagueSummonerDTO leagueSummonerDTO = summonerService.getLeagueSummonerByName(summonerName);
         return CodeResponse.successResult(leagueSummonerDTO);
     }
 }

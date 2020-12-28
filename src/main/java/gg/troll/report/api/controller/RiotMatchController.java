@@ -25,14 +25,14 @@ public class RiotMatchController {
             @RequestParam String encryptedAccountId,
             @RequestParam(required = false, defaultValue = "0") int beginIndex,
             @RequestParam(required = false, defaultValue = "0") int endIndex) throws Exception {
-        MatchlistDto matchlistDto = matchService.getMatchListByEncryptedAccountId(riotApiKey, encryptedAccountId, beginIndex, endIndex);
+        MatchlistDto matchlistDto = matchService.getMatchListByEncryptedAccountId(encryptedAccountId, beginIndex, endIndex);
         return CodeResponse.successResult(matchlistDto);
     }
 
     @GetMapping("/id")
     @ResponseBody
     public CodeResponse getMatchById(String riotApiKey, @RequestParam long matchId) throws Exception {
-        MatchDto matchDto = matchService.getMatchById(riotApiKey, matchId);
+        MatchDto matchDto = matchService.getMatchById(matchId);
         return CodeResponse.successResult(matchDto);
     }
 }
