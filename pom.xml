@@ -36,6 +36,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-json</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.github.ulisesbocchio</groupId>
+			<artifactId>jasypt-spring-boot-starter</artifactId>
+			<version>1.16</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -79,6 +84,24 @@
 			<version>2.7.1</version>
 		</dependency>
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<environment>local</environment>
+			</properties>
+		</profile>
+		<profile>
+			<id>real</id>
+			<properties>
+				<environment>real</environment>
+			</properties>
+		</profile>
+	</profiles>
 
 	<build>
 		<plugins>

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gg.troll.report.api.league.model.LeagueEntryDTO;
 import gg.troll.report.api.league.model.ReducedLeagueEntryDTO;
+import gg.troll.report.base.exception.RiotRestApiTemplateException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -30,7 +31,7 @@ public class LeagueService {
             List<LeagueEntryDTO> leagueEntryDTOList = new ObjectMapper().readValue(body, new TypeReference<List<LeagueEntryDTO>>(){});
             return leagueEntryDTOList;
         } else {
-            throw new Exception();
+            throw RiotRestApiTemplateException.of(response);
         }
     }
 
