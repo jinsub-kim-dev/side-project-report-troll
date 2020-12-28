@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class ReportTrollApplication {
 
 	public static void main(String[] args) {
+		System.setProperty("spring.profiles.default", "local");
 		SpringApplication.run(ReportTrollApplication.class, args);
 	}
 
