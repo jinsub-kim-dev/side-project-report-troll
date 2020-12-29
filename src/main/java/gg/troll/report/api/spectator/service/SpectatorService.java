@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gg.troll.report.api.league.model.LeagueEntryDTO;
 import gg.troll.report.api.spectator.model.CurrentGameInfoDto;
+import gg.troll.report.api.spectator.model.ReducedCurrentGameInfoDto;
 import gg.troll.report.base.exception.RiotRestApiTemplateException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -32,5 +33,10 @@ public class SpectatorService {
         } else {
             throw RiotRestApiTemplateException.of(response);
         }
+    }
+
+    public ReducedCurrentGameInfoDto getReducedCurrentGameInfoDto(String encryptedSummonerId) throws Exception {
+        CurrentGameInfoDto currentGameInfoDto = getCurrentGameInfoDto(encryptedSummonerId);
+        return ReducedCurrentGameInfoDto.of(currentGameInfoDto);
     }
 }
