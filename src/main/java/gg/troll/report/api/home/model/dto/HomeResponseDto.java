@@ -2,6 +2,7 @@ package gg.troll.report.api.home.model.dto;
 
 import gg.troll.report.api.assessment.model.dto.AssessmentListDto;
 import gg.troll.report.api.assessment.model.dto.SummonerAssessmentMetaDto;
+import gg.troll.report.api.match.model.RecentGamesStatsDto;
 import gg.troll.report.api.match.model.ReducedMatchlistDto;
 import gg.troll.report.api.summoner.model.LeagueSummonerDTO;
 import lombok.*;
@@ -20,4 +21,5 @@ public class HomeResponseDto implements Serializable {
     AssessmentListDto assessments;
     LeagueSummonerDTO leagueSummoner;
     ReducedMatchlistDto matches;
+    RecentGamesStatsDto recentGamesStats;
 }

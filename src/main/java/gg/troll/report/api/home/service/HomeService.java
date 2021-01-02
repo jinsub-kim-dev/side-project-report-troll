@@ -6,6 +6,7 @@ import gg.troll.report.api.assessment.service.AssessmentService;
 import gg.troll.report.api.home.model.AssessmentsRequest;
 import gg.troll.report.api.home.model.MatchesRequest;
 import gg.troll.report.api.home.model.dto.HomeResponseDto;
+import gg.troll.report.api.match.model.RecentGamesStatsDto;
 import gg.troll.report.api.match.model.ReducedMatchlistDto;
 import gg.troll.report.api.match.service.MatchService;
 import gg.troll.report.api.summoner.model.LeagueSummonerDTO;
@@ -29,12 +30,14 @@ public class HomeService {
         AssessmentListDto assessmentListDto = assessmentService.getAssessmentListDtoByAccountId(summonerDTO.getAccountId(), assessmentsRequest.getFromAssessmentId(), assessmentsRequest.getSize());
         LeagueSummonerDTO leagueSummonerDTO = summonerService.getLeagueSummonerBySummonerDto(summonerDTO);
         ReducedMatchlistDto reducedMatchlistDto = matchService.getReducedMatchListBySummonerDto(summonerDTO, matchesRequest.getBeginIndex(), matchesRequest.getEndIndex());
+        RecentGamesStatsDto recentGamesStatsDto = matchService.getRecentGamesStatsDto(reducedMatchlistDto, summonerDTO.getId());
 
         return HomeResponseDto.builder()
                 .summonerAssessmentMeta(summonerAssessmentMetaDto)
                 .assessments(assessmentListDto)
                 .leagueSummoner(leagueSummonerDTO)
                 .matches(reducedMatchlistDto)
+                .recentGamesStats(recentGamesStatsDto)
                 .build();
     }
 }

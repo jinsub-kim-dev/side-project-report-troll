@@ -1,6 +1,8 @@
 package gg.troll.report.api.match.model;
 
 import gg.troll.report.api.match.enums.QueueType;
+import gg.troll.report.base.exception.BaseException;
+import gg.troll.report.base.exception.ErrorCode;
 import lombok.*;
 
 import java.io.Serializable;
@@ -53,5 +55,14 @@ public class ReducedMatchDto implements Serializable {
 
         reducedMatchDto.setParticipants(participants);
         return reducedMatchDto;
+    }
+
+    public ReducedParticipantDto getParticipantBySummonerId(String summonerId) {
+        for (ReducedParticipantDto participant : this.participants) {
+            if (participant.getPlayer().getSummonerId().equals(summonerId)) {
+                return participant;
+            }
+        }
+        throw new BaseException(ErrorCode.SUMMONER_NOT_PARTICIPATED_IN_MATCH, "there is no valid summoner id");
     }
 }
