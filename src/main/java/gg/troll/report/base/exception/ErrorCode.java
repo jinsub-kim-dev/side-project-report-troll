@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
     ASSESSMENT_PASSWORD_MISMATCH(501, "assessment.password.mismatch"),
+    SUMMONER_NOT_PARTICIPATED_IN_MATCH(502, "summoner.not.participated.in.match"),
     UNKNOWN(999, "unexpected.exception"),
 
     RIOT_REST_API_TEMPLATE_FAIL(1000, "riot.rest.api.template.fail"),

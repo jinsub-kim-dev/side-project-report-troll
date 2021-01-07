@@ -35,6 +35,7 @@ public class MatchService {
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             String body = new BasicResponseHandler().handleResponse(response);
             MatchlistDto matchlistDto = new ObjectMapper().readValue(body, MatchlistDto.class);
+            matchlistDto.setTotalGames(matchlistDto.getMatches().size());
             return matchlistDto;
         } else {
             throw RiotRestApiTemplateException.of(response);
@@ -79,5 +80,31 @@ public class MatchService {
     public ReducedMatchlistDto getReducedMatchListBySummonerName(String summonerName, int beginIndex, int endIndex) throws Exception {
         SummonerDTO summonerDTO = summonerService.getSummonerByName(summonerName);
         return getReducedMatchListBySummonerDto(summonerDTO, beginIndex, endIndex);
+    }
+
+    public RecentGamesStatsDto getRecentGamesStatsDto(ReducedMatchlistDto reducedMatchlistDto, String summonerId) throws Exception {
+        int totalGames = reducedMatchlistDto.getTotalGames();
+        int totalKills = 0;
+        int totalDeaths = 0;
+        int totalAssists = 0;
+        int totalWins = 0;
+
+        for (ReducedMatchDto match : reducedMatchlistDto.getMatches()) {
+            ReducedParticipantDto participant = match.getParticipantBySummonerId(summonerId);
+            ReducedParticipantStatsDto matchStats = participant.getStats();
+
+            totalKills += matchStats.getKills();
+            totalDeaths += matchStats.getDeaths();
+            totalAssists += matchStats.getAssists();
+            totalWins = matchStats.isWin() ? totalWins + 1 : totalWins;
+        }
+
+        return RecentGamesStatsDto.builder()
+                .totalGames(totalGames)
+                .totalKills(totalKills)
+                .totalDeaths(totalDeaths)
+                .totalAssists(totalAssists)
+                .totalWins(totalWins)
+                .build();
     }
 }
